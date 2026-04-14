@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Confirmar Pedido | Catálogo</title>
+<link rel="icon" href="img/favicon.png" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Righteous&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0f0f13;--bg2:#18181f;--card:#1e1e28;--border:#2a2a38;--orange:#ff6b2b;--orange2:#ff8c00;--red:#ff3b3b;--green:#22c55e;--white:#fff;--muted:#9999bb;--muted2:#55556a;--ft:'Righteous',cursive;--fb:'Nunito',sans-serif;--r:12px;--tr:all .3s cubic-bezier(.4,0,.2,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--white);min-height:100vh;padding-bottom:110px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.08) 0%,transparent 50%);pointer-events:none;z-index:0}
+.progress-bar{display:flex;align-items:center;justify-content:center;gap:0;padding:10px 12px;position:relative;z-index:1}
+.step{display:flex;align-items:center}
+.step-circle{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--ft);font-size:.68rem;transition:var(--tr);flex-shrink:0}
+.step-circle.done{background:var(--orange);color:#fff}
+.step-circle.active-g{background:var(--green);color:#fff;box-shadow:0 0 12px rgba(34,197,94,.5)}
+.step-line{width:16px;height:2px;flex-shrink:0}
+.step-line.done{background:var(--orange)}
+.step-line.idle{background:var(--border)}
+.step-lbl{font-size:.58rem;font-weight:700;color:var(--muted);margin:0 2px;white-space:nowrap}
+.page-hdr{padding:6px 16px 12px;position:relative;z-index:1;text-align:center}
+.page-hdr h1{font-family:var(--ft);font-size:1.3rem;display:flex;align-items:center;justify-content:center;gap:8px}
+.page-hdr p{color:var(--muted);font-size:.82rem;margin-top:4px}
+.sec-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin:0 16px 10px;padding:14px;position:relative;z-index:1}
+.sec-card h3{font-family:var(--ft);font-size:.82rem;color:var(--orange);display:flex;align-items:center;gap:7px;margin-bottom:10px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.i-row{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:.86rem}
+.i-row:last-child{border-bottom:none}
+.i-row .l{color:var(--muted);font-size:.76rem;flex-shrink:0;margin-right:10px}
+.i-row .v{text-align:right;font-weight:600}
+.o-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.o-item:last-child{border-bottom:none}
+.o-emoji{width:36px;height:36px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0}
+.o-nome{flex:1;font-size:.86rem;font-weight:600}
+.o-qtd{font-size:.72rem;color:var(--muted)}
+.o-sub{font-family:var(--ft);font-size:.84rem;color:var(--orange)}
+.total-blk{background:linear-gradient(135deg,rgba(255,107,43,.14),rgba(255,140,0,.07));border:1px solid rgba(255,107,43,.28);border-radius:14px;margin:0 16px 10px;padding:14px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}
+.total-blk .l{font-size:.8rem;color:var(--muted)}
+.total-blk .v{font-family:var(--ft);font-size:1.5rem;color:var(--orange)}
+.wa-banner{background:linear-gradient(135deg,#128c7e,#25d366);border-radius:14px;margin:0 16px 10px;padding:13px;display:flex;align-items:center;gap:10px;position:relative;z-index:1}
+.wa-banner .ico{font-size:1.7rem;flex-shrink:0}
+.wa-banner h4{font-family:var(--ft);font-size:.85rem;margin-bottom:2px}
+.wa-banner p{font-size:.74rem;color:rgba(255,255,255,.8)}
+.nav-b{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:10px 16px;background:var(--bg);border-top:1px solid var(--border);display:flex;gap:10px}
+.btn-back{padding:12px 18px;background:var(--bg2);border:1px solid var(--border);border-radius:50px;font-family:var(--ft);font-size:.82rem;color:var(--muted);cursor:pointer;transition:var(--tr)}
+.btn-back:hover{color:var(--white);border-color:var(--white)}
+.btn-wa{flex:1;padding:13px;background:linear-gradient(135deg,#128c7e,#25d366);border:none;border-radius:50px;font-family:var(--ft);font-size:.9rem;color:#fff;cursor:pointer;transition:var(--tr);box-shadow:0 6px 18px rgba(37,211,102,.35);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-wa:hover{transform:translateY(-2px)}
+.success-ov{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;opacity:0;pointer-events:none;transition:opacity .5s}
+.success-ov.show{opacity:1;pointer-events:all}
+.s-ico{font-size:5rem;margin-bottom:16px;animation:pop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.success-ov h2{font-family:var(--ft);font-size:1.6rem;color:var(--green);margin-bottom:10px}
+.success-ov p{color:var(--muted);margin-bottom:26px;max-width:300px}
+.btn-novo{padding:14px 36px;background:var(--orange);border:none;border-radius:50px;font-family:var(--ft);font-size:1rem;color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(255,107,43,.4);transition:var(--tr)}
+.btn-novo:hover{transform:translateY(-2px)}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--card);border:1px solid var(--border);border-radius:50px;padding:10px 22px;font-size:.86rem;font-weight:700;white-space:nowrap;z-index:9999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err{border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+<div class="progress-bar">
+  <div class="step"><div class="step-circle done">✓</div><span class="step-lbl"> Dados</span></div>
+  <div class="step-line done"></div>
+  <div class="step"><div class="step-circle done">✓</div><span class="step-lbl"> Menu</span></div>
+  <div class="step-line done"></div>
+  <div class="step"><div class="step-circle done">✓</div><span class="step-lbl"> Carrinho</span></div>
+  <div class="step-line done"></div>
+  <div class="step"><div class="step-circle active-g">✓</div><span class="step-lbl" style="color:var(--green)"> Confirmar</span></div>
+</div>
+<div class="page-hdr"><h1>🧾 Resumo do Pedido</h1><p>Verifique os detalhes antes de enviar</p></div>
+<div id="conteudo"></div>
+<div class="wa-banner"><div class="ico">💬</div><div><h4>Envio via WhatsApp</h4><p>O pedido será enviado directamente para o nosso número.</p></div></div>
+<div class="nav-b">
+  <button class="btn-back" onclick="window.location.href='carrinho.html'">← Voltar</button>
+  <button class="btn-wa" id="btn-wa" onclick="enviar()">📲 Enviar pelo WhatsApp</button>
+</div>
+<div class="success-ov" id="success-ov">
+  <div class="s-ico">✅</div>
+  <h2>Pedido Enviado!</h2>
+  <p>O seu pedido foi enviado via WhatsApp. Aguarde a confirmação da nossa equipa!</p>
+  <button class="btn-novo" onclick="novoP()">Novo Pedido 🍔</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const carrinho=JSON.parse(localStorage.getItem('carrinhoCatalogo')||'[]');
+const cliente=JSON.parse(localStorage.getItem('clienteCatalogo')||'null');
+const nota=localStorage.getItem('notaPedido')||'';
+if(!cliente||!carrinho.length){window.location.href='index.html';}
+function toast(msg,tipo='err'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+tipo;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800)}
+function render(){
+  const total=carrinho.reduce((s,i)=>s+i.preco*i.quantidade,0);
+  const totalIt=carrinho.reduce((s,i)=>s+i.quantidade,0);
+  let html=`<div class="sec-card"><h3>📍 Dados de Entrega</h3>
+    <div class="i-row"><span class="l">Nome</span><span class="v">${cliente.nome}</span></div>
+    <div class="i-row"><span class="l">Província</span><span class="v">${cliente.provincia}</span></div>
+    <div class="i-row"><span class="l">Município</span><span class="v">${cliente.municipio}</span></div>
+    <div class="i-row"><span class="l">Bairro/Rua</span><span class="v">${cliente.bairro}</span></div>
+  </div>`;
+  html+=`<div class="sec-card"><h3>🛍️ Itens (${totalIt})</h3>`;
+  carrinho.forEach(item=>{
+    html+=`<div class="o-item">
+      <div class="o-emoji">${item.emoji||'🍴'}</div>
+      <div><div class="o-nome">${item.nome}</div><div class="o-qtd">${item.quantidade}x · ${item.preco.toLocaleString()} Kz/un</div></div>
+      <div class="o-sub">${(item.preco*item.quantidade).toLocaleString()} Kz</div>
+    </div>`;
+  });
+  if(nota)html+=`<div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:.8rem;color:var(--muted)">📝 <em>${nota}</em></div>`;
+  html+=`</div>`;
+  html+=`<div class="total-blk"><div><div class="l">Total do Pedido</div><div style="font-size:.7rem;color:var(--muted2);margin-top:2px">Entrega a combinar</div></div><div class="v">${total.toLocaleString()} Kz</div></div>`;
+  document.getElementById('conteudo').innerHTML=html;
+}
+function enviar(){
+  const total=carrinho.reduce((s,i)=>s+i.preco*i.quantidade,0);
+  const btn=document.getElementById('btn-wa');
+  btn.textContent='A abrir WhatsApp...';btn.disabled=true;
+  let msg=`✅ *NOVO PEDIDO*\n\n`;
+  msg+=`👤 *Cliente:* ${cliente.nome}\n`;
+  msg+=`📍 *Local:* ${cliente.provincia} / ${cliente.municipio}\n`;
+  msg+=`🏠 *Bairro:* ${cliente.bairro}\n\n`;
+  msg+=`🛍️ *ITENS:*\n`;
+  carrinho.forEach(i=>msg+=`• ${i.quantidade}x ${i.nome} — ${(i.preco*i.quantidade).toLocaleString()} Kz\n`);
+  if(nota)msg+=`\n📝 *Nota:* ${nota}\n`;
+  msg+=`\n💰 *TOTAL: ${total.toLocaleString()} Kz*\n\nObrigado pela preferência! 🙏`;
+  window.open('https://wa.me/244954288128?text='+encodeURIComponent(msg),'_blank');
+  setTimeout(()=>document.getElementById('success-ov').classList.add('show'),600);
+}
+function novoP(){
+  localStorage.removeItem('carrinhoCatalogo');
+  localStorage.removeItem('clienteCatalogo');
+  localStorage.removeItem('notaPedido');
+  window.location.href='index.html';
+}
+render();
+</script>
+</body>
+</html>
