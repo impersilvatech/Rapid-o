@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Bem-vindo | Catálogo de Pedidos</title>
+<link rel="icon" href="img/favicon.png" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Righteous&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0f0f13;--bg2:#18181f;--card:#1e1e28;--border:#2a2a38;--orange:#ff6b2b;--orange2:#ff8c00;--red:#ff3b3b;--green:#22c55e;--white:#fff;--muted:#9999bb;--muted2:#55556a;--ft:'Righteous',cursive;--fb:'Nunito',sans-serif;--r:14px;--tr:all .3s cubic-bezier(.4,0,.2,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--white);min-height:100vh;overflow-x:hidden;padding-bottom:90px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(255,107,43,.12) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(255,59,59,.07) 0%,transparent 50%);pointer-events:none;z-index:0}
+.progress-bar{display:flex;align-items:center;justify-content:center;gap:0;padding:10px 12px;position:relative;z-index:1}
+.step{display:flex;align-items:center}
+.step-circle{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--ft);font-size:.68rem;transition:var(--tr);flex-shrink:0}
+.step-circle.active{background:var(--orange);color:#fff;box-shadow:0 0 12px rgba(255,107,43,.5)}
+.step-circle.idle{background:var(--border);color:var(--muted2)}
+.step-line{width:16px;height:2px;background:var(--border);flex-shrink:0}
+.step-lbl{font-size:.58rem;font-weight:700;color:var(--muted);margin:0 2px;white-space:nowrap}
+.hero{text-align:center;padding:12px 20px 10px;position:relative;z-index:1}
+.hero-logo{width:80px;height:80px;border-radius:20px;margin:0 auto 12px;overflow:hidden;background:var(--card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+.hero-logo img{width:100%;height:100%;object-fit:cover}
+.hero-logo .ph{font-size:2rem}
+.hero h1{font-family:var(--ft);font-size:clamp(1.4rem,6vw,1.9rem);background:linear-gradient(135deg,var(--orange),var(--orange2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:5px}
+.hero p{color:var(--muted);font-size:.88rem}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:22px;margin:12px 16px;padding:20px 18px;position:relative;z-index:1;box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.form-card h2{font-family:var(--ft);font-size:.92rem;color:var(--orange);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px}
+.fg input,.fg select{width:100%;padding:12px 15px;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--fb);font-size:.92rem;color:var(--white);outline:none;transition:var(--tr);appearance:none;-webkit-appearance:none}
+.fg input:focus,.fg select:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,107,43,.12)}
+.fg input::placeholder{color:var(--muted2)}
+.fg select option{background:var(--bg2)}
+.select-wrap{position:relative}
+.select-wrap::after{content:'▼';position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:.58rem;color:var(--muted);pointer-events:none}
+
+
+
+.bottom-info{text-align:center;padding:10px 20px 28px;font-size:.77rem;color:var(--muted2);position:relative;z-index:1}
+
+.nav-bar{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:8px 16px 12px;background:var(--bg2);border-top:1px solid var(--border);display:flex}
+.nav-bar button{flex:1;padding:11px;background:linear-gradient(135deg,var(--orange),var(--orange2));border:none;border-radius:50px;font-family:var(--ft);font-size:.85rem;color:#fff;cursor:pointer;transition:var(--tr);box-shadow:0 4px 14px rgba(255,107,43,.4);display:flex;align-items:center;justify-content:center;gap:7px}
+.nav-bar button:hover{transform:translateY(-2px)}
+.nav-bar button:active{transform:scale(.97)}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--card);border:1px solid var(--border);border-radius:50px;padding:10px 22px;font-size:.86rem;font-weight:700;white-space:nowrap;z-index:9999;transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.err{border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+<div class="progress-bar">
+  <div class="step"><div class="step-circle active">1</div><span class="step-lbl" style="color:var(--orange)"> Dados</span></div>
+  <div class="step-line"></div>
+  <div class="step"><div class="step-circle idle">2</div><span class="step-lbl"> Menu</span></div>
+  <div class="step-line"></div>
+  <div class="step"><div class="step-circle idle">3</div><span class="step-lbl"> Carrinho</span></div>
+  <div class="step-line"></div>
+  <div class="step"><div class="step-circle idle">4</div><span class="step-lbl"> Confirmar</span></div>
+</div>
+<div class="hero">
+  <div class="hero-logo">
+    <img src="img/logo.png" alt="Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <span class="ph" style="display:none">🍽️</span>
+  </div>
+  <h1>Bem-vindo!</h1>
+  <p>Preencha os seus dados para iniciar o pedido</p>
+</div>
+<div class="form-card">
+  <h2>📋 Os seus dados</h2>
+  <form id="form-cliente">
+    <div class="fg"><label>Nome</label><input type="text" id="nome" placeholder="Ex: Emílio da Silva" required/></div>
+    <div class="fg"><label>Província</label>
+      <div class="select-wrap">
+        <select id="provincia" required>
+          <option value="" disabled selected>Selecione a província...</option>
+          <option>Bengo</option><option>Benguela</option><option>Bié</option>
+          <option>Cabinda</option><option>Cuando Cubango</option><option>Cuanza Norte</option>
+          <option>Cuanza Sul</option><option>Cunene</option><option>Huambo</option>
+          <option>Huíla</option><option>Icolo e Bengo</option><option>Luanda</option>
+          <option>Lunda Norte</option><option>Lunda Sul</option><option>Malanje</option>
+          <option>Moxico</option><option>Namibe</option><option>Uíge</option><option>Zaire</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label>Município</label><input type="text" id="municipio" placeholder="Ex: Huambo, Caála..." required/></div>
+    <div class="fg"><label>Rua / Bairro</label><input type="text" id="bairro" placeholder="Ex: Bairro Benfica, Rua Bié" required/></div>
+
+  </form>
+</div>
+<div class="bottom-info">🔒 Os seus dados serão utilizados apenas para o pedido.</div>
+<div class="nav-bar"><button type="button" onclick="document.getElementById('form-cliente').requestSubmit()">Ver o Menu 🍽️</button></div>
+<div class="toast" id="toast"></div>
+<script>
+function toast(msg,tipo='ok'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+tipo;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800)}
+document.getElementById('form-cliente').addEventListener('submit',function(e){
+  e.preventDefault();
+  const nome=document.getElementById('nome').value.trim();
+  const provincia=document.getElementById('provincia').value;
+  const municipio=document.getElementById('municipio').value.trim();
+  const bairro=document.getElementById('bairro').value.trim();
+  if(!nome||!provincia||!municipio||!bairro){toast('Preencha todos os campos!','err');return;}
+  localStorage.removeItem('carrinhoCatalogo');
+  localStorage.setItem('clienteCatalogo',JSON.stringify({nome,provincia,municipio,bairro}));
+  window.location.href='menu.html';
+});
+</script>
+</body>
+</html>
